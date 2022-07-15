@@ -1,0 +1,43 @@
+[15-07-2022 11:46:49.831112] HALMD (HAL’s MD package) 1.0.1
+[15-07-2022 11:46:49.831222] variant: +GPU +GPU_SINGLE_PRECISION +GPU_DOUBLE_SINGLE_PRECISION +FORCE_DSFUN
+[15-07-2022 11:46:49.831237] built with GNU 8.3.0 and NVCC 9.2 for Lua 5.1.4, Boost C++ 1.67.0, and HDF5 1.10.4
+[15-07-2022 11:46:49.831247] command line: halmd obstacle_slab.lua -v
+[15-07-2022 11:46:49.831255] host name: merciful.imp.fu-berlin.de
+[15-07-2022 11:46:49.833451] edge lengths of simulation domain: 100 30 30
+[15-07-2022 11:46:49.838243] number of particles: 4000
+[15-07-2022 11:46:49.838272] number of particle species: 1
+[15-07-2022 11:46:49.845271] lattice: restrict lattice positions to centred slab: 0.2 1 1
+[15-07-2022 11:46:49.845330] lattice: placing particles on fcc lattice: a = 2.5
+[15-07-2022 11:46:49.845345] lattice: number of fcc unit cells: 8 12 12
+[15-07-2022 11:46:49.845355] [WARNING] lattice: lattice not fully occupied (4608 sites)
+[15-07-2022 11:46:49.857239] region_species (tube_group): using cuboid geometry
+[15-07-2022 11:46:49.857272] region_species (tube_group): lowest corner: -10 -15 -15
+[15-07-2022 11:46:49.857289] region_species (tube_group): edge length: 20 2 2
+[15-07-2022 11:46:49.860859] write to H5MD file: /srv/public/bottinelli/sample/test_obstacle/obstacle_slab.h5
+[15-07-2022 11:46:49.872193] integration time step: 0.005
+[15-07-2022 11:46:49.872275] random (GPU): random number generator type: rand48
+[15-07-2022 11:46:49.872291] random (GPU): set RNG seed: 3694116346
+[15-07-2022 11:46:49.873746] verlet_nvt_boltzmann: temperature of Boltzmann distribution: 0
+[15-07-2022 11:46:49.873784] verlet_nvt_boltzmann: coupling interval: 50 steps
+[15-07-2022 11:46:49.873799] verlet_nvt_boltzmann: coupling rate: 4 per unit time
+[15-07-2022 11:46:49.873833] starting simulation run
+[15-07-2022 11:46:49.874966] running simulation over 2000 integration steps
+[15-07-2022 11:46:49.920052] completed 2000 integration steps
+[15-07-2022 11:46:49.920101] finishing simulation run
+[15-07-2022 11:46:49.920351] [  0.2%] preparation for integration step: 35.95 ns (0.21 ns, 2000 calls)
+[15-07-2022 11:46:49.920384] [  0.2%] functions prepended to integrate() stage: 41.47 ns (0.21 ns, 2000 calls)
+[15-07-2022 11:46:49.920410] [  0.2%] setting particle positions on lattice: 108.988 µs
+[15-07-2022 11:46:49.920418] [  0.2%] functions prepended to final stage: 55.91 ns (0.27 ns, 2000 calls)
+[15-07-2022 11:46:49.920426] [  0.3%] functions appended to final stage: 60.95 ns (0.34 ns, 2000 calls)
+[15-07-2022 11:46:49.920433] [  0.3%] functions appended to integrate() stage: 73.16 ns (0.31 ns, 2000 calls)
+[15-07-2022 11:46:49.920442] [  0.5%] finishing simulation: 224.326 µs
+[15-07-2022 11:46:49.920449] [  2.3%] Boltzmann distribution: 26.26 µs (0.38 µs, 40 calls)
+[15-07-2022 11:46:49.920456] [  2.5%] start-up of simulation: 1.121 ms
+[15-07-2022 11:46:49.920462] [  4.7%] evaluation of observables: 1.058 µs (0.011 µs, 2000 calls)
+[15-07-2022 11:46:49.920470] [ 36.9%] second half-step of velocity-Verlet: 8.49 µs (0.25 µs, 1960 calls)
+[15-07-2022 11:46:49.920501] [ 43.7%] final stage of integrators: 9.85 µs (0.25 µs, 2000 calls)
+[15-07-2022 11:46:49.920520] [ 45.3%] first half-step of velocity-Verlet: 10.20 µs (0.61 µs, 2000 calls)
+[15-07-2022 11:46:49.920543] [ 48.1%] integrate() stage of integrators: 10.84 µs (0.61 µs, 2000 calls)
+[15-07-2022 11:46:49.920563] [ 94.4%] MD integration step: 21.27 µs (0.76 µs, 2000 calls)
+[15-07-2022 11:46:49.920586] [100.0%] total simulation runtime: 45.055 ms
+[15-07-2022 11:46:49.956184] HALMD exit
