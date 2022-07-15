@@ -57,7 +57,7 @@ function main(args)
     print(position)
 
     --create the slot
-    local tube = mdsim.geometries.cuboid({ lowest_corner = {0,0,0 }, length = { args.slab*length[1], 2, 2} } )
+    local tube = mdsim.geometries.cuboid({ lowest_corner = {-args.slab*length[1]/2, 0, 0 }, length = { args.slab*length[1], 2, 2} } )
     local tube_group = mdsim.particle_groups.region_species({particle = particle, species = 0, geometry = tube, selection = 'included', label = 'tube_group'})
 
     --steps
