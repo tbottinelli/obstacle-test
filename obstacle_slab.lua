@@ -35,8 +35,6 @@ math.randomseed(os.time())
 --
 function main(args)
     -- total number of particles from sum of particles
-    local nparticle = numeric.sum(args.particles)
-	
     local length = {}
     	length[1]=100
 	length[2]=30
@@ -45,6 +43,8 @@ function main(args)
     local dimension = 3
     -- create simulation domain with periodic boundary conditions
     local box = mdsim.box({length = length})
+
+    local nparticle = math.ceil( (args.slab*length[1]*length[2]*length[3]*4)/math.pow(1.25, 3) )
    
 
     -- create system state
@@ -54,14 +54,14 @@ function main(args)
     local lattice = mdsim.positions.lattice({box = box, particle = particle, slab = {args.slab,1,1} })
     lattice:set()
     position = particle.data["position"]
-    print(position)
 
     --create the slot
-    local tube = mdsim.geometries.cuboid({ lowest_corner = {-args.slab*length[1]/2, 0, 0 }, length = { args.slab*length[1], 2, 2} } )
-    local tube_group = mdsim.particle_groups.region_species({particle = particle, species = 0, geometry = tube, selection = 'included', label = 'tube_group'})
+    local tube = mdsim.geometries.cuboid({ lowest_corner = {-args.slab*length[1]/2, -args.pore_diameter/2, -args.pore_diameter/2 }, length = { args.slab*length[1], args.pore_diameter, args.pore_diameter } } )
+    local pore_group = mdsim.particle_groups.region_species({particle = particle, box = box, species = 0, geometry = tube, selection = 'excluded', label = 'pore'})
+  
 
     --steps
-    local steps = args.time/args.timestep
+    local steps = math.ceil(args.time/args.timestep)
 
     -- H5MD file writer
     local file = writers.h5md({path = ("obstacle_slab.h5"):format(args.output), overwrite = args.overwrite})
@@ -71,7 +71,7 @@ function main(args)
     local all_group = mdsim.particle_groups.all({particle = particle, label = "all"})
 
     --sample phase space
-    local phase_space = observables.phase_space({box=box, group = all_group, every = steps})
+    local phase_space = observables.phase_space({box=box, group = pore_group , every = steps})
 
     --write positions in h5 file
     if steps > 0 then
@@ -87,8 +87,9 @@ function main(args)
     observables.sampler:sample()
     
     --run simulation
-    local integrator = mdsim.integrators.verlet_nvt_boltzmann({
+    local integrator = mdsim.integrators.verlet_nvt_andersen({
     box=box
+    , group = pore_group
     , particle = particle
     , timestep = args.timestep
     , temperature = args.temperature
@@ -106,26 +107,12 @@ end
 --
 function define_args(parser)
     parser:add_argument("output,o", {type = "string", action = parser.action.substitute_date_time,
-        default = "Mixeq_density_0.3.h5", help = "prefix of output files"})
-    parser:add_argument("overwrite", {type = "boolean", default = false, help = "overwrite output file"})
-
-    parser:add_argument("particles", {type = "vector", dtype = "integer", default = {4000}, help = "number of particles"})
-    parser:add_argument("density", {type = "number", default = 0.35, help = "particle number density"})
-    parser:add_argument("ratios", {type = "vector", dtype = "number", action = function(args, key, value)
-        if #value ~= 2 and #value ~= 3 then
-            error(("box ratios has invalid dimension '%d'"):format(#value), 0)
-        end
-        args[key] = value
-    end, default = {1, 1, 1}, help = "relative aspect ratios of simulation box"})
-    parser:add_argument("masses", {type = "vector", dtype = "number", default = {1}, help = "particle masses"})
-    parser:add_argument("initial-temperature", {type = "number", default = 0, help = "initial temperature"})
+        default = "obstacle_slab", help = "prefix of output files"})
     parser:add_argument("temperature", {type = "number", default = 0, help = "target temperature"})
     parser:add_argument("rate", {type = "number", default = 4, help = "heat bath collision rate"})
     parser:add_argument("time", {type = "number", default =10 , help = "integration time"})
     parser:add_argument("timestep", {type = "number", default = 0.005, help = "integration time step"})
     parser:add_argument('slab', {type = 'number', default = 0.2, help = 'box fraction occupied'})
+    parser:add_argument('pore_diameter', {type = 'number', default = 10, help = 'pore diameter'})
 
-    local sampling = parser:add_argument_group("sampling", {help = "sampling intervals (0: disabled)"})
-    sampling:add_argument("trajectory", {type = "integer", help = "for trajectory"})
-    sampling:add_argument("state-vars", {type = "integer", default = 10, help = "for state variables"})
 end

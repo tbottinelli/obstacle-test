@@ -26,6 +26,7 @@ from numpy import *
 from pylab import *
 import matplotlib
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 
 def main():
     # define and parse command line arguments
@@ -42,7 +43,7 @@ def main():
 
     # open and read data file
     H5 = h5py.File(args.input, 'r')
-    H5pos = H5['particles/all/position/value']
+    H5pos = H5['particles/pore/position/value']
     #H5box = H5['particles/box']
 
     # print some details
@@ -62,6 +63,7 @@ def main():
     # select data for plotting the positions in the box
     x = H5pos[0,:,0]
     y = H5pos[0,:,1]
+    z = H5pos[0,:,2]
 
     # append plot data to file
     if args.dump:
@@ -74,11 +76,17 @@ def main():
     # generate plot
     if not args.no_plot:
         # plot potential energy versus time
-        plt.scatter(x, y )
-
+        plt.subplot(2,1,1)
+        plt.scatter(x, y, color='blue' )
+        plt.xlim([-50,50])
+        plt.xlim([-15,15])
+    
+        plt.subplot(2,1,2)
+        plt.scatter(y, z, color='red' )
         # add axes labels 
-        plt.xlim([-50, 50])
+        plt.xlim([-15, 15])
         plt.ylim([-15, 15])
+
         plt.show()
 
     H5.close()
