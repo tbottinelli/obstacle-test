@@ -95,11 +95,10 @@ def main():
     Temperature.append(H5obs['region39/temperature/value'][x:])
     
     Temperature = np.array(Temperature)
-    print(Temperature.shape)
     mean_temp = np.mean(Temperature, axis = 1)
-    print(mean_temp.shape)
-    templist = mean_temp/ Temperature.shape[0]
-    print(templist.shape)
+    print(mean_temp)
+    #templist = mean_temp/ Temperature.shape[0]
+    #print(templist)
     dx =  2.5
 	
 
@@ -113,7 +112,7 @@ def main():
         r'\usepackage{txfonts}',
         ))
     plt.rc('legend', frameon=False, numpoints=1, fontsize=8, labelspacing=0.2, handlelength=2, handletextpad=0.5, borderaxespad=0.5)
-    plt.rc('figure',figsize=(2.3,2))
+    plt.rc('figure',figsize=(4.7,2))
     plt.rc('xtick', direction='in',top=True)
     plt.rc('ytick', direction='in',right=True)
     plt.rc('xtick.minor',visible=True,top=True)
@@ -123,28 +122,30 @@ def main():
     plt.rc('savefig', bbox='tight',pad_inches=0.05,dpi=600,transparent=False)
     plt.rc('ps',usedistiller='xpdf')
      
-    xgrid = dx * np.arange(int((2*TR + AT + 2.0*Delta)/dx))+1.25 	 
+    xgrid = dx * np.arange(int((2*TR + AT + 2.0*Delta)/dx))+1.25 
+    print(xgrid)
         
-    rdf0 = interp1d(xgrid, templist ,bounds_error=False, kind = 'quadratic')
+    rdf0 = interp1d(xgrid, mean_temp ,bounds_error=False, kind = 'quadratic')
     
     grids_at = np.linspace(0, 70, num = 55, endpoint = False )
     grids_adr = np.linspace(0,100, num =1000 , endpoint=False)
     sym = -50
 
-    plt.plot(grids_adr + sym, rdf0(grids_adr) , '-',color='teal',linewidth=1.2,fillstyle='none', label = r'$\sigma = 0.9$')
+    plt.plot(grids_adr + sym, rdf0(grids_adr) , '-',color='teal',linewidth=1.2,fillstyle='full', label = r'$\sigma = 0.9$')
 
     plt.xlabel(r"$x / \sigma$")
     plt.ylabel(r"$k_{B}T(x)/\varepsilon$") 
     #print(np.max(time0)-0.8, np.max(time1)-1,np.max(time2)-1.2)
     hm = 30
     source = 10
+    slab = 20
     plt.xlim([0+sym,100+sym])
-    plt.ylim([0.8,2.3])
+    plt.ylim([0,5])
     #plt.legend(loc = 'upper left')
     plt.axvline(x=source+sym, color='k', linestyle='--',linewidth=0.4)
  
 
-    plt.axvspan(1.25-1.25,8.75+1.25, alpha=0.5, color='grey')
+    plt.axvspan(-slab/2,slab/2, alpha=0.5, color='grey')
     plt.axvspan(0+sym, source+sym, alpha=0.5, color='gold')
 
     plt.savefig('temp.pdf')

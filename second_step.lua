@@ -186,7 +186,7 @@ function define_args(parser)
         args[key] = value
     end, help = "H5MD input file"})
 
-    parser:add_argument("time", {type = "number", default = 8, help = "integration time"})
+    parser:add_argument("time", {type = "number", default = 1000, help = "integration time"})
     parser:add_argument("temperature", {type = "number", default = 1.5, help = "temperature of heat bath"})
     parser:add_argument("nknots", {type = "number", default = 401, help = "number of knots"})
 

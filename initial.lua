@@ -38,7 +38,7 @@ function main(args)
     local nspecies = #args.particles
     local nfluid = numeric.sum(args.particles)
    -- derive edge lengths from number of particles, density and edge ratios
-    local file = readers.h5md({path = "obstacle_slab.h5"})
+    local file = readers.h5md({path = args.input})
     local reader , sample = observables.phase_space.reader({file = file, location = {"particles", "pore"}, fields = {"position"}})
 
     reader:read_at_step(0)
@@ -102,7 +102,7 @@ function main(args)
     for i = nfluid+1,nfluid+nobstacle do
         velocities[i] = {0,0,0}
         positions[i] = obst_pos[i - nfluid]
-        positions[i][1] = positions[i][1] + 5
+        --positions[i][1] = positions[i][1] + 5
     end
     particle.data["position"] = positions
     particle.data["velocity"] = velocities
@@ -174,6 +174,10 @@ end
 function define_args(parser)
     parser:add_argument("output,o", {type = "string", action = parser.action.substitute_date_time,
         default = "initial", help = "prefix of output files"})
+    parser:add_argument('input', {type = 'string', action = function(args, key, value)
+	    readers.h5md.check(value)
+	    args[key] = value
+	    end, help = 'input file h5'})
     parser:add_argument("overwrite", {type = "boolean", default = true, help = "overwrite output file"})
     parser:add_argument("particles", {type = "vector", dtype = "integer", default = {67334}, help = "number of particles"})
     parser:add_argument("density", {type = "number", default = 0.35, help = "particle number density"})

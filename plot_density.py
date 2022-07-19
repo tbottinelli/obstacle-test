@@ -140,6 +140,7 @@ def main():
     #read density modes from .h5 file
 
     sym=-50
+    slab=20
     xgrid = dx * np.arange(int((100)/dx)+1)
     xgrid -= 50
     for i in range(1,2):    
@@ -189,7 +190,7 @@ def main():
     #plt.xlim([-10,20])
 
     plt.axvline(x=source+sym,  color='k', linestyle='--',linewidth=0.4)
-    plt.axvspan(-3.75, 13.75, alpha=0.5, color='grey')
+    plt.axvspan(-slab/2, slab/2, alpha=0.5, color='grey')
     plt.axvspan(0+sym,source+sym, alpha=0.5, color='gold')
     plt.show()
     plt.savefig("den.pdf")

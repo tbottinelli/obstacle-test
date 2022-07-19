@@ -34,7 +34,7 @@ def main():
     parser.add_argument('--range', type=int, nargs=2, help='select range of data points')
     parser.add_argument('--dump', metavar='FILENAME', help='dump plot data to filename')
     parser.add_argument('--no-plot', action='store_true', help='do not produce plots, but do the analysis')
-    parser.add_argument('--group', help='particle group (default: %(default)s)', default='all')
+    parser.add_argument('--group', help='particle group (default: %(default)s)', default='pore')
     parser.add_argument('input', metavar='INPUT', help='H5MD input file with data for state variables')
     args = parser.parse_args()
 
@@ -43,7 +43,7 @@ def main():
 
     # open and read data file
     H5 = h5py.File(args.input, 'r')
-    H5pos = H5['particles/pore/position/value']
+    H5pos = H5['particles/{0}/position/value'.format(args.group)]
     #H5box = H5['particles/box']
 
     # print some details
