@@ -38,8 +38,11 @@ def main():
     parser.add_argument('--dump', metavar='FILENAME', help='dump plot data to filename')
     parser.add_argument('--no-plot', action='store_true', help='do not produce plots, but do the analysis')
     parser.add_argument('--group', help='particle group (default: %(default)s)', default='all')
-    parser.add_argument('input', metavar='INPUT', help='H5MD input file with data for state variables')#
-#	parser.add_argument('input2', metavar='INPUT', help='H5MD input file with data for state variables')
+    parser.add_argument('input1', metavar='INPUT', help='H5MD input file with data for state variables')
+    parser.add_argument('input2', metavar='INPUT', help='H5MD input file with data for state variables')
+    parser.add_argument('input3', metavar='INPUT', help='H5MD input file with data for state variables')
+    parser.add_argument('input4', metavar='INPUT', help='H5MD input file with data for state variables')
+
 	
     args = parser.parse_args()
     s0=0
@@ -47,58 +50,15 @@ def main():
     AT=25
     a=0
     Delta=7.5
-    x=1
 
-    H5 = h5py.File(args.input, 'r')
-    H5obs = H5['observables']
-
-    Temperature = []
-    Temperature.append(H5obs['region0/temperature/value'][x:])
-    Temperature.append(H5obs['region1/temperature/value'][x:])
-    Temperature.append(H5obs['region2/temperature/value'][x:])
-    Temperature.append(H5obs['region3/temperature/value'][x:])
-    Temperature.append(H5obs['region4/temperature/value'][x:])
-    Temperature.append(H5obs['region5/temperature/value'][x:])
-    Temperature.append(H5obs['region6/temperature/value'][x:])
-    Temperature.append(H5obs['region7/temperature/value'][x:])
-    Temperature.append(H5obs['region8/temperature/value'][x:])
-    Temperature.append(H5obs['region9/temperature/value'][x:])
-    Temperature.append(H5obs['region10/temperature/value'][x:])
-    Temperature.append(H5obs['region11/temperature/value'][x:])
-    Temperature.append(H5obs['region12/temperature/value'][x:])
-    Temperature.append(H5obs['region13/temperature/value'][x:])
-    Temperature.append(H5obs['region14/temperature/value'][x:])
-    Temperature.append(H5obs['region15/temperature/value'][x:])
-    Temperature.append(H5obs['region16/temperature/value'][x:])
-    Temperature.append(H5obs['region17/temperature/value'][x:])
-    Temperature.append(H5obs['region18/temperature/value'][x:])
-    Temperature.append(H5obs['region19/temperature/value'][x:])
-    Temperature.append(H5obs['region20/temperature/value'][x:])
-    Temperature.append(H5obs['region21/temperature/value'][x:])
-    Temperature.append(H5obs['region22/temperature/value'][x:])
-    Temperature.append(H5obs['region23/temperature/value'][x:])
-    Temperature.append(H5obs['region24/temperature/value'][x:])
-    Temperature.append(H5obs['region25/temperature/value'][x:])
-    Temperature.append(H5obs['region26/temperature/value'][x:])
-    Temperature.append(H5obs['region27/temperature/value'][x:])
-    Temperature.append(H5obs['region28/temperature/value'][x:])
-    Temperature.append(H5obs['region29/temperature/value'][x:])
-    Temperature.append(H5obs['region30/temperature/value'][x:])
-    Temperature.append(H5obs['region31/temperature/value'][x:])
-    Temperature.append(H5obs['region32/temperature/value'][x:])
-    Temperature.append(H5obs['region33/temperature/value'][x:])
-    Temperature.append(H5obs['region34/temperature/value'][x:])
-    Temperature.append(H5obs['region35/temperature/value'][x:])
-    Temperature.append(H5obs['region36/temperature/value'][x:])
-    Temperature.append(H5obs['region37/temperature/value'][x:])
-    Temperature.append(H5obs['region38/temperature/value'][x:])
-    Temperature.append(H5obs['region39/temperature/value'][x:])
+    H5 = [ h5py.File(args.input1, 'r'),  h5py.File(args.input2, 'r'), h5py.File(args.input3, 'r'), h5py.File(args.input4, 'r')]
+    for j in range(len(H5)):
+        H5obs =[ H5[j]['observables']]
+        Temperature = [H5obs[j]['region{}/temperature/value'].format(i) for i in range(1,39)]
     
     Temperature = np.array(Temperature)
+    print(Temperature.shape)
     mean_temp = np.mean(Temperature, axis = 1)
-    print(mean_temp)
-    #templist = mean_temp/ Temperature.shape[0]
-    #print(templist)
     dx =  2.5
 	
 
@@ -140,7 +100,7 @@ def main():
     source = 10
     slab = 20
     plt.xlim([0+sym,100+sym])
-    plt.ylim([0,5])
+    #plt.ylim([0,5])
     #plt.legend(loc = 'upper left')
     plt.axvline(x=source+sym, color='k', linestyle='--',linewidth=0.4)
  

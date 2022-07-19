@@ -129,7 +129,7 @@ function main(args)
 
     phase_space:writer({file = file_write, fields = {"position", "velocity", "species", "force", "image","mass"}, every = steps-equibliration_steps}) -- FIXME 
 
-    -- Create 30 slabs
+    -- Create 40 slabs
     local geometry = {}
     local group = {}
     local msv = {}

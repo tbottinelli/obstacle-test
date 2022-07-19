@@ -93,10 +93,10 @@ function main(args)
     --oss lua tables start with index 1 so this is for position x
     for i = 1,nfluid do
         if (positions[i][1] < 0) then 
-            positions[i][1] = positions[i][1] -20
+            positions[i][1] = positions[i][1] - ((args.slab/2) +5)
         end
         if (positions[i][1] >= 0) then
-            positions[i][1] = positions[i][1] + 20
+            positions[i][1] = positions[i][1] + ((args.slab/2) +5)
         end
     end
     for i = nfluid+1,nfluid+nobstacle do
@@ -193,6 +193,7 @@ function define_args(parser)
     parser:add_argument("rate", {type = "number", default = 4, help = "heat bath collision rate"})
     parser:add_argument("time", {type = "number", default =10 , help = "integration time"})
     parser:add_argument("timestep", {type = "number", default = 0.005, help = "integration time step"})
+    parser:add_argument('slab',{type = 'number', default= 0.2})
 
     local sampling = parser:add_argument_group("sampling", {help = "sampling intervals (0: disabled)"})
     sampling:add_argument("trajectory", {type = "integer", help = "for trajectory"})

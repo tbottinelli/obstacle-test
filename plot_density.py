@@ -185,7 +185,7 @@ def main():
 
     #yticks = np.arange(0.68,0.84,0.03)
     #plt.yticks(yticks)
-    plt.ylim([0,1.3])
+   # plt.ylim([0,1.3])
     plt.xlim([0+sym,100+sym])
     #plt.xlim([-10,20])
 
