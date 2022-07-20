@@ -38,8 +38,11 @@ def main():
     parser.add_argument('--dump', metavar='FILENAME', help='dump plot data to filename')
     parser.add_argument('--no-plot', action='store_true', help='do not produce plots, but do the analysis')
     parser.add_argument('--group', help='particle group (default: %(default)s)', default='all')
-    parser.add_argument('input', metavar='INPUT', help='H5MD input file with data for state variables')#
-#	parser.add_argument('input2', metavar='INPUT', help='H5MD input file with data for state variables')
+    parser.add_argument('input1', metavar='INPUT', help='H5MD input file with data for state variables')
+    parser.add_argument('input2', metavar='INPUT', help='H5MD input file with data for state variables')
+    parser.add_argument('input3', metavar='INPUT', help='H5MD input file with data for state variables')#
+    parser.add_argument('input4', metavar='INPUT', help='H5MD input file with data for state variables')
+
 	
     args = parser.parse_args()
     s0=0
@@ -49,54 +52,14 @@ def main():
     Delta=7.5
     x=1
 
-    H5 = h5py.File(args.input, 'r')
-    H5obs = H5['observables']
-
-    Temperature = []
-    Temperature.append(H5obs['region0/potential_energy/value'][x:])
-    Temperature.append(H5obs['region1/potential_energy/value'][x:])
-    Temperature.append(H5obs['region2/temperature/value'][x:])
-    Temperature.append(H5obs['region3/temperature/value'][x:])
-    Temperature.append(H5obs['region4/temperature/value'][x:])
-    Temperature.append(H5obs['region5/temperature/value'][x:])
-    Temperature.append(H5obs['region6/temperature/value'][x:])
-    Temperature.append(H5obs['region7/temperature/value'][x:])
-    Temperature.append(H5obs['region8/temperature/value'][x:])
-    Temperature.append(H5obs['region9/temperature/value'][x:])
-    Temperature.append(H5obs['region10/temperature/value'][x:])
-    Temperature.append(H5obs['region11/temperature/value'][x:])
-    Temperature.append(H5obs['region12/temperature/value'][x:])
-    Temperature.append(H5obs['region13/temperature/value'][x:])
-    Temperature.append(H5obs['region14/temperature/value'][x:])
-    Temperature.append(H5obs['region15/temperature/value'][x:])
-    Temperature.append(H5obs['region16/temperature/value'][x:])
-    Temperature.append(H5obs['region17/temperature/value'][x:])
-    Temperature.append(H5obs['region18/temperature/value'][x:])
-    Temperature.append(H5obs['region19/temperature/value'][x:])
-    Temperature.append(H5obs['region20/temperature/value'][x:])
-    Temperature.append(H5obs['region21/temperature/value'][x:])
-    Temperature.append(H5obs['region22/temperature/value'][x:])
-    Temperature.append(H5obs['region23/temperature/value'][x:])
-    Temperature.append(H5obs['region24/temperature/value'][x:])
-    Temperature.append(H5obs['region25/temperature/value'][x:])
-    Temperature.append(H5obs['region26/temperature/value'][x:])
-    Temperature.append(H5obs['region27/temperature/value'][x:])
-    Temperature.append(H5obs['region28/temperature/value'][x:])
-    Temperature.append(H5obs['region29/temperature/value'][x:])
-    Temperature.append(H5obs['region30/temperature/value'][x:])
-    Temperature.append(H5obs['region31/temperature/value'][x:])
-    Temperature.append(H5obs['region32/temperature/value'][x:])
-    Temperature.append(H5obs['region33/temperature/value'][x:])
-    Temperature.append(H5obs['region34/temperature/value'][x:])
-    Temperature.append(H5obs['region35/temperature/value'][x:])
-    Temperature.append(H5obs['region36/temperature/value'][x:])
-    Temperature.append(H5obs['region37/temperature/value'][x:])
-    Temperature.append(H5obs['region38/temperature/value'][x:])
-    Temperature.append(H5obs['region39/temperature/value'][x:])
-    
-    Temperature = np.array(Temperature)
-    mean_temp = np.mean(Temperature, axis = 1)
-    print(mean_temp)
+    H5 = [ h5py.File(args.input1, 'r'), h5py.File(args.input2, 'r'), h5py.File(args.input3, 'r'), h5py.File(args.input4, 'r')]
+    Epot = []
+    for j in range(len(H5)):
+        H5obs = H5[j]['observables']
+        Epot.append( [H5obs['region{}/potential_energy/value'.format(i)][x:] for i in range(0,40)] )
+    Epot = np.array(Epot)
+    mean_epot = np.mean(Epot, axis = 2)
+    #print(mean_epot)
     #templist = mean_temp/ Temperature.shape[0]
     #print(templist)
     dx =  2.5
@@ -123,15 +86,23 @@ def main():
     plt.rc('ps',usedistiller='xpdf')
      
     xgrid = dx * np.arange(int((2*TR + AT + 2.0*Delta)/dx))+1.25 
-    print(xgrid)
+   # print(xgrid)
         
-    rdf0 = interp1d(xgrid, mean_temp ,bounds_error=False, kind = 'quadratic')
-    
+    rdf0 = interp1d(xgrid, mean_epot[0,:] ,bounds_error=False, kind = 'quadratic')
+    rdf1 = interp1d(xgrid, mean_epot[1,:] ,bounds_error=False, kind = 'quadratic')
+    rdf2 = interp1d(xgrid, mean_epot[2,:] ,bounds_error=False, kind = 'quadratic')
+    rdf3 = interp1d(xgrid, mean_epot[3,:] ,bounds_error=False, kind = 'quadratic')
+
     grids_at = np.linspace(0, 70, num = 55, endpoint = False )
     grids_adr = np.linspace(0,100, num =1000 , endpoint=False)
     sym = -50
 
-    plt.plot(grids_adr + sym, rdf0(grids_adr) , '-',color='teal',linewidth=1.2,fillstyle='full', label = r'$\sigma = 0.9$')
+    plt.plot(grids_adr + sym, rdf0(grids_adr) , '-',color='deepskyblue',linewidth=1.2,fillstyle='full', label = 'D8')
+    plt.plot(grids_adr + sym, rdf1(grids_adr) , '-',color='royalblue',linewidth=1.2,fillstyle='full', label = 'D10')
+    plt.plot(grids_adr + sym, rdf2(grids_adr) , '-',color='mediumblue',linewidth=1.2,fillstyle='full', label = 'D15')
+    plt.plot(grids_adr + sym, rdf3(grids_adr) , '-',color='midnightblue',linewidth=1.2,fillstyle='full', label = 'D20')
+
+    plt.legend()
 
     plt.xlabel(r"$x / \sigma$")
     plt.ylabel(r"$k_{B}T(x)/\varepsilon$") 
@@ -148,7 +119,7 @@ def main():
     plt.axvspan(-slab/2,slab/2, alpha=0.5, color='grey')
     plt.axvspan(0+sym, source+sym, alpha=0.5, color='gold')
 
-    plt.savefig('temp.pdf')
+    plt.savefig('epot.pdf')
    
 
 

@@ -52,13 +52,15 @@ def main():
     Delta=7.5
 
     H5 = [ h5py.File(args.input1, 'r'),  h5py.File(args.input2, 'r'), h5py.File(args.input3, 'r'), h5py.File(args.input4, 'r')]
+    Temperature = []
     for j in range(len(H5)):
-        H5obs =[ H5[j]['observables']]
-        Temperature = [H5obs[j]['region{}/temperature/value'].format(i) for i in range(1,39)]
+        H5obs = H5[j]['observables']
+        Temperature.append( [ H5obs['region{0}/temperature/value'.format(i)] for i in range(0,40) ] )
     
     Temperature = np.array(Temperature)
     print(Temperature.shape)
-    mean_temp = np.mean(Temperature, axis = 1)
+    mean_temp = np.mean(Temperature, axis = 2)
+    print(mean_temp.shape)
     dx =  2.5
 	
 
@@ -83,15 +85,23 @@ def main():
     plt.rc('ps',usedistiller='xpdf')
      
     xgrid = dx * np.arange(int((2*TR + AT + 2.0*Delta)/dx))+1.25 
-    print(xgrid)
+    print(xgrid.shape)
         
-    rdf0 = interp1d(xgrid, mean_temp ,bounds_error=False, kind = 'quadratic')
+    rdf0 = interp1d(xgrid, mean_temp[0,:] ,bounds_error=False, kind = 'quadratic')
+    rdf1 = interp1d(xgrid, mean_temp[1,:] ,bounds_error=False, kind = 'quadratic')
+    rdf2 = interp1d(xgrid, mean_temp[2,:] ,bounds_error=False, kind = 'quadratic')
+    rdf3 = interp1d(xgrid, mean_temp[3,:] ,bounds_error=False, kind = 'quadratic')
+
     
     grids_at = np.linspace(0, 70, num = 55, endpoint = False )
     grids_adr = np.linspace(0,100, num =1000 , endpoint=False)
     sym = -50
 
-    plt.plot(grids_adr + sym, rdf0(grids_adr) , '-',color='teal',linewidth=1.2,fillstyle='full', label = r'$\sigma = 0.9$')
+    plt.plot(grids_adr + sym, rdf0(grids_adr) , '-',color='deepskyblue',linewidth=1.2,fillstyle='full', label = 'D8')
+    plt.plot(grids_adr + sym, rdf1(grids_adr) , '-',color='royalblue',linewidth=1.2,fillstyle='full', label = 'D10')
+    plt.plot(grids_adr + sym, rdf2(grids_adr) , '-',color='mediumblue',linewidth=1.2,fillstyle='full', label = 'D15')
+    plt.plot(grids_adr + sym, rdf3(grids_adr) , '-',color='midnightblue',linewidth=1.2,fillstyle='full', label = 'D20')
+    plt.legend()
 
     plt.xlabel(r"$x / \sigma$")
     plt.ylabel(r"$k_{B}T(x)/\varepsilon$") 
