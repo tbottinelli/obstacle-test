@@ -41,17 +41,20 @@ def main():
     parser.add_argument('input2', metavar='INPUT', help='H5MD input file with data for state variables')
     parser.add_argument('input3', metavar='INPUT', help='H5MD input file with data for state variables')
     parser.add_argument('input4', metavar='INPUT', help='H5MD input file with data for state variables')
+    parser.add_argument('input5', metavar='INPUT', help='H5MD input file with data for state variables')
 
 
     args = parser.parse_args()
 
     # open and read data file
-    H5 = [ h5py.File(args.input1, 'r'), h5py.File(args.input2, 'r'), h5py.File(args.input3, 'r'), h5py.File(args.input4, 'r') ]
+    H5 = [ h5py.File(args.input1, 'r'), h5py.File(args.input2, 'r'), h5py.File(args.input3, 'r'), h5py.File(args.input4, 'r'), h5py.File(args.input5, 'r') ]
     density = []
     for j in range(len(H5)):
         H5obs = H5[j]['observables']
         density.append([ H5obs['region{0}/particle_number/value'.format(i)] for i in range(0,40)] )
 
+    #H5obs = H5['observables']
+    #density = [ H5obs['region{0}/particle_number/value'.format(i)] for i in range(0,40)  ]
     density = np.array(density)/(30*30*2.5)
     density_mean = np.mean(density, axis=2)
     print(density_mean.shape) #should be 1x40 in the end
@@ -80,6 +83,7 @@ def main():
     y1 = interp1d(xgrid, density_mean[1,:], bounds_error=False, kind='quadratic')
     y2 = interp1d(xgrid, density_mean[2,:], bounds_error=False, kind='quadratic')
     y3 = interp1d(xgrid, density_mean[3,:], bounds_error=False, kind='quadratic')
+    y4 = interp1d(xgrid, density_mean[4,:], bounds_error=False, kind='quadratic')
 
     grids_at = np.linspace(0, 70, num = 55, endpoint = False )
     grids_adr = np.linspace(0,100, num =1000 , endpoint=False)
@@ -90,10 +94,11 @@ def main():
     # generate plot
     if not args.no_plot:
         # plot potential energy versus time
-        plt.plot(grids_adr+sym, y0(grids_adr), '-',  color = 'deepskyblue' , label='D8')
-        plt.plot(grids_adr+sym, y1(grids_adr),'-', color = 'royalblue' , label='D10')
-        plt.plot(grids_adr+sym, y2(grids_adr),'-', color = 'mediumblue' , label='D15')
-        plt.plot(grids_adr+sym, y3(grids_adr),'-', color = 'midnightblue' , label='D20')
+        plt.plot(grids_adr+sym, y0(grids_adr), '-',  color = 'deepskyblue' , label='L15')
+        plt.plot(grids_adr+sym, y1(grids_adr),'-', color = 'royalblue' , label='L20')
+        plt.plot(grids_adr+sym, y2(grids_adr),'-', color = 'mediumblue' , label='L25')
+        plt.plot(grids_adr+sym, y3(grids_adr),'-', color = 'midnightblue' , label='L30')
+        plt.plot(grids_adr+sym, y4(grids_adr),'-', color = 'black' , label='L35')
 
 
         # add axes labels and finalise plot
@@ -101,16 +106,16 @@ def main():
         xlabel(r'x')
         ylabel(r'density profile')
         plt.legend()
-        hm = 30
+        hm = 25
         sym = -50
         source = 10
-        slab = 20
+        slab =35
         plt.xlim([0+sym,100+sym])
         plt.axvline(x=source+sym, color='k', linestyle='--',linewidth=0.4)
         plt.axvspan(-slab/2,slab/2, alpha=0.5, color='grey')
         plt.axvspan(0+sym, source+sym, alpha=0.5, color='gold')
 
-        plt.savefig('density.pdf')
+        plt.savefig('densityLen.pdf')
    
 
 

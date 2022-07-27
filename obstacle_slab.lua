@@ -44,7 +44,7 @@ function main(args)
     -- create simulation domain with periodic boundary conditions
     local box = mdsim.box({length = length})
 
-    local nparticle = math.ceil( (args.slab*length[1]*length[2]*length[3]*4)/math.pow(1.25, 3) )
+    local nparticle =  math.ceil( (args.slab*length[1]*length[2]*length[3]*4)/math.pow(1.25, 3) )
    
 
     -- create system state
@@ -56,15 +56,15 @@ function main(args)
     position = particle.data["position"]
 
     --create the slot
-    local tube = mdsim.geometries.cuboid({ lowest_corner = {-args.slab*length[1]/2, -args.pore_diameter/2, -args.pore_diameter/2 }, length = { args.slab*length[1], args.pore_diameter, args.pore_diameter } } )
-    local pore_group = mdsim.particle_groups.region_species({particle = particle, box = box, species = 0, geometry = tube, selection = 'excluded', label = 'pore'})
+    local pore = mdsim.geometries.cuboid({ lowest_corner = {-args.slab*length[1]/2, -args.pore_diameter/2, -args.pore_diameter/2 }, length = { args.slab*length[1], args.pore_diameter, args.pore_diameter } } )
+    local pore_group = mdsim.particle_groups.region_species({particle = particle, box = box, species = 0, geometry = pore, selection = 'excluded', label = 'pore'})
   
 
     --steps
     local steps = math.ceil(args.time/args.timestep)
 
     -- H5MD file writer
-    local file = writers.h5md({path = ("obstacle_slab.h5"):format(args.output), overwrite = args.overwrite})
+    local file = writers.h5md({path = ("obstacle_slab.h5"):format(args.output), overwrite = true})
 
 
     -- select all particles
@@ -113,6 +113,6 @@ function define_args(parser)
     parser:add_argument("time", {type = "number", default =10 , help = "integration time"})
     parser:add_argument("timestep", {type = "number", default = 0.005, help = "integration time step"})
     parser:add_argument('slab', {type = 'number', default = 0.2, help = 'box fraction occupied'})
-    parser:add_argument('pore_diameter', {type = 'number', default = 10, help = 'pore diameter'})
+    parser:add_argument('pore_diameter', {type = 'number', default = 4, help = 'pore diameter'})
 
 end

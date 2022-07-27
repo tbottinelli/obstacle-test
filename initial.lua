@@ -70,6 +70,17 @@ function main(args)
     for i = nfluid + 1, nfluid+nobstacle do table.insert(species, 1) end
     particle.data["species"] = species
 
+    --local groups = { mdsim.particle_groups.id_range({ particle = particle, range = {1,nfluid}, label = 'fluid'}),
+    --                 mdsim.particle_groups.id_range({ particle = particle, range = {nfluid + 1,nfluid+ nobstacle}, label = 'obst'})
+--	     }
+
+   -- local particle_ = {
+   --   fluid = groups[1]:to_particle({label = 'fluid'})
+   -- , obst = groups[2]:to_particle({label = 'obst'})
+   -- }
+    
+   -- particle = particle_; particle_ = nil
+
     -- set initial particle positions sequentially on an fcc lattice
     local lattice = mdsim.positions.lattice({box = box, particle = particle, slab = {0.6,1,1}})
     lattice:set()
@@ -124,6 +135,9 @@ function main(args)
       , particle = particle
       , potential = potential
     })
+   -- local force1 = mdsim.forces.pair({box = box, particle = {all_fluid_group, all_fluid_group}, potential = potential})
+   -- local force2 = mdsim.forces.pair({box = box, particle = {obstacle_group, obstacle_group} , potential = potential})
+
 
     -- add velocity-Verlet integrator with Andersen thermostat (NVT)
     local integrator = mdsim.integrators.verlet_nvt_andersen({
@@ -179,7 +193,7 @@ function define_args(parser)
 	    args[key] = value
 	    end, help = 'input file h5'})
     parser:add_argument("overwrite", {type = "boolean", default = true, help = "overwrite output file"})
-    parser:add_argument("particles", {type = "vector", dtype = "integer", default = {72000}, help = "number of particles"})
+    parser:add_argument("particles", {type = "vector", dtype = "integer", default = {65000}, help = "number of particles"})
     parser:add_argument("density", {type = "number", default = 0.35, help = "particle number density"})
     parser:add_argument("ratios", {type = "vector", dtype = "number", action = function(args, key, value)
         if #value ~= 2 and #value ~= 3 then
@@ -193,7 +207,7 @@ function define_args(parser)
     parser:add_argument("rate", {type = "number", default = 4, help = "heat bath collision rate"})
     parser:add_argument("time", {type = "number", default =10 , help = "integration time"})
     parser:add_argument("timestep", {type = "number", default = 0.005, help = "integration time step"})
-    parser:add_argument('slab',{type = 'number', default= 0.2})
+    parser:add_argument('slab',{type = 'number', default= 0.3})
 
     local sampling = parser:add_argument_group("sampling", {help = "sampling intervals (0: disabled)"})
     sampling:add_argument("trajectory", {type = "integer", help = "for trajectory"})

@@ -42,6 +42,7 @@ def main():
     parser.add_argument('input2', metavar='INPUT', help='H5MD input file with data for state variables')
     parser.add_argument('input3', metavar='INPUT', help='H5MD input file with data for state variables')
     parser.add_argument('input4', metavar='INPUT', help='H5MD input file with data for state variables')
+    parser.add_argument('input5', metavar='INPUT', help='H5MD input file with data for state variables')
 
 	
     args = parser.parse_args()
@@ -51,15 +52,17 @@ def main():
     a=0
     Delta=7.5
 
-    H5 = [ h5py.File(args.input1, 'r'),  h5py.File(args.input2, 'r'), h5py.File(args.input3, 'r'), h5py.File(args.input4, 'r')]
+    H5 =  [h5py.File(args.input1, 'r'),  h5py.File(args.input2, 'r'), h5py.File(args.input3, 'r'), h5py.File(args.input4, 'r'), h5py.File(args.input5, 'r')]
     Temperature = []
     for j in range(len(H5)):
         H5obs = H5[j]['observables']
         Temperature.append( [ H5obs['region{0}/temperature/value'.format(i)] for i in range(0,40) ] )
-    
+   
+    #H5obs = H5['observables']
+    #Temperature = [ H5obs['region{0}/temperature/value'.format(i)][1:] for i in range(0,40) ]
     Temperature = np.array(Temperature)
     print(Temperature.shape)
-    mean_temp = np.mean(Temperature, axis = 2)
+    mean_temp = np.mean(Temperature, axis = 2) #2 if more than 1 input
     print(mean_temp.shape)
     dx =  2.5
 	
@@ -85,30 +88,32 @@ def main():
     plt.rc('ps',usedistiller='xpdf')
      
     xgrid = dx * np.arange(int((2*TR + AT + 2.0*Delta)/dx))+1.25 
-    print(xgrid.shape)
+    print(xgrid)
         
     rdf0 = interp1d(xgrid, mean_temp[0,:] ,bounds_error=False, kind = 'quadratic')
     rdf1 = interp1d(xgrid, mean_temp[1,:] ,bounds_error=False, kind = 'quadratic')
     rdf2 = interp1d(xgrid, mean_temp[2,:] ,bounds_error=False, kind = 'quadratic')
     rdf3 = interp1d(xgrid, mean_temp[3,:] ,bounds_error=False, kind = 'quadratic')
+    rdf4 = interp1d(xgrid, mean_temp[4,:] ,bounds_error=False, kind = 'quadratic')
 
     
     grids_at = np.linspace(0, 70, num = 55, endpoint = False )
     grids_adr = np.linspace(0,100, num =1000 , endpoint=False)
     sym = -50
 
-    plt.plot(grids_adr + sym, rdf0(grids_adr) , '-',color='deepskyblue',linewidth=1.2,fillstyle='full', label = 'D8')
-    plt.plot(grids_adr + sym, rdf1(grids_adr) , '-',color='royalblue',linewidth=1.2,fillstyle='full', label = 'D10')
-    plt.plot(grids_adr + sym, rdf2(grids_adr) , '-',color='mediumblue',linewidth=1.2,fillstyle='full', label = 'D15')
-    plt.plot(grids_adr + sym, rdf3(grids_adr) , '-',color='midnightblue',linewidth=1.2,fillstyle='full', label = 'D20')
+    plt.plot(grids_adr + sym, rdf0(grids_adr) , '-',color='deepskyblue',linewidth=1.2,fillstyle='full', label = 'L15')
+    plt.plot(grids_adr + sym, rdf1(grids_adr) , '-',color='royalblue',linewidth=1.2,fillstyle='full', label = 'L20')
+    plt.plot(grids_adr + sym, rdf2(grids_adr) , '-',color='mediumblue',linewidth=1.2,fillstyle='full', label = 'L25')
+    plt.plot(grids_adr + sym, rdf3(grids_adr) , '-',color='midnightblue',linewidth=1.2,fillstyle='full', label = 'L30')
+    plt.plot(grids_adr + sym, rdf4(grids_adr) , '-',color='black',linewidth=1.2,fillstyle='full', label = 'L35')
     plt.legend()
 
     plt.xlabel(r"$x / \sigma$")
     plt.ylabel(r"$k_{B}T(x)/\varepsilon$") 
     #print(np.max(time0)-0.8, np.max(time1)-1,np.max(time2)-1.2)
-    hm = 30
+    hm = 25
     source = 10
-    slab = 20
+    slab = 30
     plt.xlim([0+sym,100+sym])
     #plt.ylim([0,5])
     #plt.legend(loc = 'upper left')
@@ -118,7 +123,7 @@ def main():
     plt.axvspan(-slab/2,slab/2, alpha=0.5, color='grey')
     plt.axvspan(0+sym, source+sym, alpha=0.5, color='gold')
 
-    plt.savefig('temp.pdf')
+    plt.savefig('tempLen.pdf')
    
 
 

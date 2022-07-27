@@ -77,9 +77,9 @@ def main():
     if not args.no_plot:
         # plot potential energy versus time
         plt.subplot(2,1,1)
-        plt.scatter(x, y, color='blue' )
+        plt.scatter(x, z, color='blue' )
         plt.xlim([-50,50])
-        plt.xlim([-15,15])
+        plt.ylim([-15,15])
     
         plt.subplot(2,1,2)
         plt.scatter(y, z, color='red' )

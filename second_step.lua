@@ -40,8 +40,8 @@ function main(args)
     local Source_size = 10
     local rest_size = 100 - Source_size
     local eps = 0.001
-    local mean_velocity = {0.25,0,0}
-    local nobstacle =  36864
+    local source_velocity = {0.25,0,0}
+    local nobstacle =  34560
 
     --open H5MD file for reading
     local file_read = readers.h5md({path = args.input})
@@ -70,10 +70,12 @@ function main(args)
 
     local all_fluid_group = mdsim.particle_groups.id_range({particle = particle,range={1,nfluid-nobstacle},label = "allfluid"})
     local obstacle_group = mdsim.particle_groups.id_range({particle = particle,range={nfluid-nobstacle+1,nfluid},label = "allobstacle"})
-
-    local source_box = mdsim.geometries.cuboid({lowest_corner = {-edges[1][1]/2 -eps , -edges[2][2]/2, -edges[3][3]/2}, length = {Source_size + eps, edges[2][2] , edges[3][3]}})
-
-    local source_group = mdsim.particle_groups.region({particle = particle, selection = "included", geometry = source_box, box = box, label = "source"})
+    local source_group = mdsim.particle_groups.region({
+    particle = particle,
+    selection = "included",
+    geometry = mdsim.geometries.cuboid({lowest_corner = {-edges[1][1]/2 -eps , -edges[2][2]/2, -edges[3][3]/2},
+               				length = {Source_size + eps, edges[2][2] , edges[3][3]}}),
+    box = box, label = "source"})
 
     local rest_box = mdsim.geometries.cuboid({lowest_corner = {-edges[1][1]/2 + Source_size , -edges[2][2]/2, -edges[3][3]/2}, length = {eps + rest_size, edges[2][2] , edges[3][3]}})
 
@@ -100,13 +102,16 @@ function main(args)
     })
 
     -- compute forces
-    local force = mdsim.forces.pair({box = box, particle = particle, potential = potential})
+   -- local force1 = mdsim.forces.pair({box = box, particle = {all_fluid_group, all_fluid_group}, potential = potential})
+   -- local force2 = mdsim.forces.pair({box = box, particle = {obstacle_group, all_fluid_group} , potential = potential})
+    local force = mdsim.forces.pair({box=box, particle=particle,potential=potential})
     observables.sampler:sample()
     log.info(("Closing H5MD file %s"):format(file_read.path))
     file_read:close()
 
+
     --integrator
-    local source_integrator = mdsim.integrators.verlet_nvt_boltzmann_value({group = source_group, mean_velocity = mean_velocity, box = box, timestep = timestep, temperature = temperature, rate = 8})
+    local source_integrator = mdsim.integrators.verlet_nvt_boltzmann_value({group = source_group, mean_velocity = source_velocity, box = box, timestep = timestep, temperature = temperature, rate = 8})
     local rest_integrator = mdsim.integrators.verlet({group = rest_group, box = box, timestep = timestep, temperature = temperature, rate = 8})
     -- H5MD file writer
     local file_write = writers.h5md({path = args.output, mode = "truncate", overwrite = true})
@@ -127,7 +132,7 @@ function main(args)
 
     --writer
 
-    phase_space:writer({file = file_write, fields = {"position", "velocity", "species", "force", "image","mass"}, every = steps-equibliration_steps}) -- FIXME 
+    phase_space:writer({file = file_write, fields = {"position", "velocity", "species", "force", "image","mass"}, every = 300}) -- FIXME 
 
     -- Create 40 slabs
     local geometry = {}

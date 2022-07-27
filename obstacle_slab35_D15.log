@@ -1,0 +1,20 @@
+[27-07-2022 11:04:23.661875] HALMD (HAL’s MD package) 1.0-alpha6-patch193 [AdResS-branch commit 36e879ed8]
+[27-07-2022 11:04:23.661989] variant: +GPU +GPU_SINGLE_PRECISION +GPU_DOUBLE_SINGLE_PRECISION +FORCE_DSFUN
+[27-07-2022 11:04:23.662001] built with GNU 8.3.0 and NVCC 9.2 for Lua 5.1.4
+[27-07-2022 11:04:23.662007] command line: halmd obstacle_slab.lua -v --pore_diameter 15 --slab 0.35
+[27-07-2022 11:04:23.662014] host name: merciful.imp.fu-berlin.de
+[27-07-2022 11:04:23.664078] profiler timer resolution: 1 ns
+[27-07-2022 11:04:23.675454] edge lengths of simulation domain: 100 30 30
+[27-07-2022 11:04:23.681222] number of particles: 64512
+[27-07-2022 11:04:23.681258] number of particle species: 1
+[27-07-2022 11:04:23.687498] lattice: restrict initial particle positions to slab: 0.35 1 1
+[27-07-2022 11:04:23.687563] lattice: placing particles on fcc lattice: a = 1.25
+[27-07-2022 11:04:23.765815] write to H5MD file: /srv/public/bottinelli/tecla/test_obstacle/obstacle_slab.h5
+[27-07-2022 11:04:23.813073] integration time step: 0.005
+[27-07-2022 11:04:23.813183] random (GPU): random number generator type: rand48
+[27-07-2022 11:04:23.813201] random (GPU): set RNG seed: 2200233235
+[27-07-2022 11:04:23.814942] verlet_nvt_andersen: temperature of heat bath: 0
+[27-07-2022 11:04:23.814973] verlet_nvt_andersen: collision rate with heat bath: 4
+[27-07-2022 11:04:23.818257] starting simulation run over 2000 integration steps
+[27-07-2022 11:04:24.080513] finished simulation run
+[27-07-2022 11:04:24.156709] HALMD exit
