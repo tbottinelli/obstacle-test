@@ -193,7 +193,7 @@ function define_args(parser)
 	    args[key] = value
 	    end, help = 'input file h5'})
     parser:add_argument("overwrite", {type = "boolean", default = true, help = "overwrite output file"})
-    parser:add_argument("particles", {type = "vector", dtype = "integer", default = {65000}, help = "number of particles"})
+    parser:add_argument("particles", {type = "vector", dtype = "integer", default = {72000}, help = "number of particles"})
     parser:add_argument("density", {type = "number", default = 0.35, help = "particle number density"})
     parser:add_argument("ratios", {type = "vector", dtype = "number", action = function(args, key, value)
         if #value ~= 2 and #value ~= 3 then

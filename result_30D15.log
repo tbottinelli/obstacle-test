@@ -278,4 +278,5 @@
 [27-07-2022 10:19:49.047778] [ 78.9%] on_prepend_finalize: 2.3043 ms (0.0048 ms, 500000 calls)
 [27-07-2022 10:19:49.047787] [ 86.6%] MD integration step: 2.5303 ms (0.0049 ms, 500000 calls)
 [27-07-2022 10:19:49.047796] [100.0%] total simulation runtime: 12.17 min (0.4 min, 2 calls)
+
 [27-07-2022 10:19:49.095626] HALMD exit
